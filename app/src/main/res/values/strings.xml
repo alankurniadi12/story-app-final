@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Story App</string>
+    <string name="label_registered">Pendaftaran</string>
+    <string name="label_name">Nama</string>
+    <string name="label_hint_input_name">Masukan nama</string>
+    <string name="label_email">Email</string>
+    <string name="label_hint_input_email">Masukan email</string>
+    <string name="label_password">Kata Sandi</string>
+    <string name="label_hint_password">Masukan kata sandi</string>
+    <string name="label_story_app">Story App</string>
+    <string name="label_btn_register"> Daftar</string>
+    <string name="label_error_message_name">Nama tidak boleh kosong</string>
+    <string name="label_error_message_email_empty">Email tidak boleh kosong</string>
+    <string name="label_error_message_email_failed">Penulisan email salah</string>
+    <string name="label_error_message_password">Tidak boleh kurang dari 6 karakter</string>
+    <string name="label_error_message_password_empty">Kata sandi tidak boleh kosong</string>
+    <string name="label_account_ready">Sudah punya Akun?</string>
+    <string name="label_account_not_ready">Belum punya akun?</string>
+    <string name="label_register">Daftar</string>
+    <string name="label_cd_button_add_story">Button add story</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_cd_photo_profile">Photo profile</string>
+    <string name="dummy_text">Lorem ipsum dolor sit amet . The graphic and typographic operators know this well, in reality all the professions dealing with the universe of communication have a stable relationship with these words, but what is it?</string>
+    <string name="label_btn_camera">Kamera</string>
+    <string name="label_btn_galery">Galeri</string>
+    <string name="label_btn_add_story">Tambah Cerita</string>
+    <string name="label_input_story">Masukan cerita</string>
+    <string name="label_cerita">Cerita:</string>
+    <string name="label_icon_user">Icon user</string>
+    <string name="label_logout">Keluar</string>
+    <string name="label_login">Masuk</string>
+    <string name="label_image_story">Gambar cerita</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="label_cd_gotomap">pergi ke map</string>
+</resources>
