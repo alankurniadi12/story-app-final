@@ -19,6 +19,11 @@ import com.alankurniadi.storyapp.databinding.ActivityMapsBinding
 import com.alankurniadi.storyapp.databinding.CustomeInfoWindowsBinding
 import com.alankurniadi.storyapp.model.ListStoryItem
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
@@ -33,11 +38,14 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import java.io.IOException
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -75,6 +83,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             isZoomControlsEnabled = true
             isCompassEnabled = true
         }
+        mMap.setOnInfoWindowClickListener(this)
 
         getMyLocation()
         userMarkerStory()
@@ -102,17 +111,51 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             LayoutInflater.from(applicationContext),
                             null, false
                         )
-                    Glide.with(this@MapsActivity)
-                        .asBitmap()
+//                    Glide.with(this@MapsActivity)
+//                        .asBitmap()
+//                        .load(data.photoUrl)
+//                        .listener(object : RequestListener<Bitmap> {
+//                            override fun onLoadFailed(
+//                                e: GlideException?,
+//                                model: Any?,
+//                                target: Target<Bitmap>?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//                                Log.e("MapsActivity", "onLoadFailed = $e")
+//                                return false
+//                            }
+//
+//                            override fun onResourceReady(
+//                                resource: Bitmap?,
+//                                model: Any?,
+//                                target: Target<Bitmap>?,
+//                                dataSource: DataSource?,
+//                                isFirstResource: Boolean
+//                            ): Boolean {
+//                                if (marker != null && marker.isInfoWindowShown) {
+//                                    marker.hideInfoWindow()
+//                                    marker.showInfoWindow()
+//                                }
+//                                return false
+//                            }
+//
+//                        })
+//                        .into(bindingIw.ivPhoto)
+                    Picasso.get()
                         .load(data.photoUrl)
-                        .into(object : CustomTarget<Bitmap>() {
-                            override fun onResourceReady(
-                                resource: Bitmap,
-                                transition: Transition<in Bitmap>?
-                            ) {
-                                bindingIw.ivPhoto.setImageBitmap(resource)
+                        .error(R.drawable.ic_baseline_broken_image_24)
+                        .into(bindingIw.ivPhoto, object : Callback {
+                            override fun onSuccess() {
+                                if (marker != null && marker.isInfoWindowShown) {
+                                    marker.hideInfoWindow()
+                                    marker.showInfoWindow()
+                                }
                             }
-                            override fun onLoadCleared(placeholder: Drawable?) {}
+
+                            override fun onError(e: Exception?) {
+                                Log.e("MapsActivity", "onError Load Image")
+                            }
+
                         })
                     bindingIw.tvUserName.text = marker.title
                     return bindingIw.root
@@ -129,6 +172,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 300
             )
         )
+    }
+
+    private fun MarkerCallBack(marker: Marker): Int {
+        TODO("Not yet implemented")
     }
 
     private fun getMyLocation() {
@@ -155,5 +202,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             e.printStackTrace()
         }
         return addressName
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        marker.showInfoWindow()
     }
 }
