@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -20,11 +21,8 @@ import com.alankurniadi.storyapp.databinding.CustomeInfoWindowsBinding
 import com.alankurniadi.storyapp.model.ListStoryItem
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
@@ -33,17 +31,12 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
 import java.io.IOException
-import java.lang.Exception
 import java.util.*
-import kotlin.collections.HashMap
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
@@ -68,9 +61,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
         setContentView(binding.root)
 
         dataMarker = args.dataMaps.toList()
-        Log.e("MapsActivity", "onCreate:$dataMarker ")
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -87,11 +78,40 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
 
         getMyLocation()
         userMarkerStory()
+        setCustomInfoWindow()
+    }
+
+    private fun setCustomInfoWindow() {
+        val customView: View = layoutInflater.inflate(R.layout.custome_info_windows, null)
+
+        mMap.setInfoWindowAdapter(object : InfoWindowAdapter {
+            override fun getInfoContents(maker: Marker): View {
+                render(maker, customView)
+                return customView
+            }
+
+            override fun getInfoWindow(maker: Marker): View {
+                render(maker, customView)
+                return customView
+            }
+
+        })
+    }
+
+    private fun render(marker: Marker, view: View) {
+        val name = view.findViewById<TextView>(R.id.tv_user_name)
+        val photo = view.findViewById<ImageView>(R.id.iv_photo)
+
+        for (data in dataMarker) {
+            Glide.with(applicationContext)
+                .load(data.photoUrl)
+                .into(photo)
+            name.text = marker.title
+        }
     }
 
     private fun userMarkerStory() {
         dataMarker.forEach { data ->
-            Log.e("MapsActivity", "listStoryItem: ${data.name} ${data.lat}, ${data.lon}")
             if (data.lat != null && data.lon != null) {
                 val latLng = LatLng(data.lat, data.lon)
                 val addressName = getAddressName(data.lat, data.lon)
@@ -100,67 +120,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
                 )
                 boundsBuilder.include(latLng)
             }
-
-            mMap.setInfoWindowAdapter(object : InfoWindowAdapter {
-                override fun getInfoContents(marker: Marker): View? {
-                    return null
-                }
-                override fun getInfoWindow(marker: Marker): View {
-                    val bindingIw: CustomeInfoWindowsBinding =
-                        CustomeInfoWindowsBinding.inflate(
-                            LayoutInflater.from(applicationContext),
-                            null, false
-                        )
-//                    Glide.with(this@MapsActivity)
-//                        .asBitmap()
-//                        .load(data.photoUrl)
-//                        .listener(object : RequestListener<Bitmap> {
-//                            override fun onLoadFailed(
-//                                e: GlideException?,
-//                                model: Any?,
-//                                target: Target<Bitmap>?,
-//                                isFirstResource: Boolean
-//                            ): Boolean {
-//                                Log.e("MapsActivity", "onLoadFailed = $e")
-//                                return false
-//                            }
-//
-//                            override fun onResourceReady(
-//                                resource: Bitmap?,
-//                                model: Any?,
-//                                target: Target<Bitmap>?,
-//                                dataSource: DataSource?,
-//                                isFirstResource: Boolean
-//                            ): Boolean {
-//                                if (marker != null && marker.isInfoWindowShown) {
-//                                    marker.hideInfoWindow()
-//                                    marker.showInfoWindow()
-//                                }
-//                                return false
-//                            }
-//
-//                        })
-//                        .into(bindingIw.ivPhoto)
-                    Picasso.get()
-                        .load(data.photoUrl)
-                        .error(R.drawable.ic_baseline_broken_image_24)
-                        .into(bindingIw.ivPhoto, object : Callback {
-                            override fun onSuccess() {
-                                if (marker != null && marker.isInfoWindowShown) {
-                                    marker.hideInfoWindow()
-                                    marker.showInfoWindow()
-                                }
-                            }
-
-                            override fun onError(e: Exception?) {
-                                Log.e("MapsActivity", "onError Load Image")
-                            }
-
-                        })
-                    bindingIw.tvUserName.text = marker.title
-                    return bindingIw.root
-                }
-            })
         }
 
         val bounds: LatLngBounds = boundsBuilder.build()
@@ -172,10 +131,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
                 300
             )
         )
-    }
-
-    private fun MarkerCallBack(marker: Marker): Int {
-        TODO("Not yet implemented")
     }
 
     private fun getMyLocation() {
