@@ -2,12 +2,8 @@ package com.alankurniadi.storyapp.maps
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,15 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.navArgs
 import com.alankurniadi.storyapp.R
 import com.alankurniadi.storyapp.databinding.ActivityMapsBinding
-import com.alankurniadi.storyapp.databinding.CustomeInfoWindowsBinding
 import com.alankurniadi.storyapp.model.ListStoryItem
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter

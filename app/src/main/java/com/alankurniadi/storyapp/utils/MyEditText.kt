@@ -38,8 +38,14 @@ class MyEditText: AppCompatEditText, View.OnTouchListener {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (s.toString().isNotEmpty()) showClearButton() else hideClearButton()
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+                if (text.toString().isNotEmpty()) showClearButton() else hideClearButton()
+
+                if (!isEmailValid(text.toString())) {
+                    error = context.getString(R.string.label_error_message_email_failed)
+                }
+
             }
 
             override fun afterTextChanged(p0: Editable?) {

@@ -19,63 +19,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_reg_name"
+    <EditText
+        android:id="@+id/ed_register_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
+        android:hint="@string/label_name"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_register">
+        app:layout_constraintTop_toBottomOf="@+id/tv_register" />
 
-        <com.alankurniadi.storyapp.utils.MyEditText
-            android:id="@+id/ed_register_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_name"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_reg_email"
+    <com.alankurniadi.storyapp.utils.MyEditText
+        android:id="@+id/ed_register_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:hint="@string/label_email"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_reg_name">
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_name" />
 
-        <com.alankurniadi.storyapp.utils.MyEditText
-            android:id="@+id/ed_register_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_email"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_reg_password"
+    <com.alankurniadi.storyapp.utils.MyEditTextPassword
+        android:id="@+id/ed_register_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        app:counterEnabled="true"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_reg_email">
-
-        <com.alankurniadi.storyapp.utils.MyEditText
-            android:id="@+id/ed_register_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/label_password"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_email" />
 
     <com.alankurniadi.storyapp.utils.MyButton
         android:id="@+id/btn_register"
@@ -86,7 +66,7 @@
         android:text="@string/label_btn_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_reg_password" />
+        app:layout_constraintTop_toBottomOf="@+id/ed_register_password" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -112,7 +92,6 @@
             android:text="@string/label_login"
             android:textColor="@color/blue" />
     </LinearLayout>
-
 
     <ProgressBar
         android:id="@+id/register_progress"

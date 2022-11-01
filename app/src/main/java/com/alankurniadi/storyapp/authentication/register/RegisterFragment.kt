@@ -42,36 +42,27 @@ class RegisterFragment : Fragment() {
         listStoryVm.saveToken("")
 
         with(binding) {
-            edRegisterName.doOnTextChanged { _, _, _, count ->
-                if (count == 0) {
-                    setDisableButton(btnRegister)
-                    tilRegName.isErrorEnabled = true
-                    tilRegName.error = getString(R.string.label_error_message_name)
-                } else {
+            edRegisterName.doOnTextChanged { text, _, _, _ ->
+                if (text!!.isNotEmpty()) {
                     setEnableButton(btnRegister)
-                    tilRegName.isErrorEnabled = false
+                } else {
+                    setDisableButton(btnRegister)
                 }
             }
 
             edRegisterEmail.doOnTextChanged { text, _, _, _ ->
-                if (!isEmailValid(text.toString())) {
-                    setDisableButton(btnRegister)
-                    tilRegEmail.isErrorEnabled = true
-                    tilRegEmail.error = getString(R.string.label_error_message_email_failed)
-                } else {
+                if (text!!.isNotEmpty()) {
                     setEnableButton(btnRegister)
-                    tilRegEmail.isErrorEnabled = false
+                } else {
+                    setDisableButton(btnRegister)
                 }
             }
 
             edRegisterPassword.doOnTextChanged { text, _, _, _ ->
-                if (text!!.length < 6) {
-                    setDisableButton(btnRegister)
-                    tilRegPassword.isErrorEnabled = true
-                    tilRegPassword.error = getString(R.string.label_error_message_password)
-                } else {
+                if (text!!.isNotEmpty()) {
                     setEnableButton(btnRegister)
-                    tilRegPassword.isErrorEnabled = false
+                } else {
+                    setDisableButton(btnRegister)
                 }
             }
 
@@ -82,24 +73,21 @@ class RegisterFragment : Fragment() {
                 val password = edRegisterPassword.text.toString().trim()
 
                 if (name.isEmpty()) {
-                    tilRegName.isErrorEnabled = true
-                    tilRegName.error = getString(R.string.label_error_message_name)
+                    edRegisterName.error = getString(R.string.label_error_message_name)
                     setDisableButton(btnRegister)
                     registerProgress.visibility = View.GONE
                     return@setOnClickListener
                 }
 
                 if (email.isEmpty()) {
-                    tilRegEmail.isErrorEnabled = true
-                    tilRegEmail.error = getString(R.string.label_error_message_email_empty)
+                    edRegisterEmail.error = getString(R.string.label_error_message_email_empty)
                     setDisableButton(btnRegister)
                     registerProgress.visibility = View.GONE
                     return@setOnClickListener
                 }
 
                 if (password.isEmpty()) {
-                    tilRegPassword.isErrorEnabled = true
-                    tilRegPassword.error = getString(R.string.label_error_message_password)
+                    edRegisterPassword.error = getString(R.string.label_error_message_password_empty)
                     setDisableButton(btnRegister)
                     registerProgress.visibility = View.GONE
                     return@setOnClickListener
