@@ -100,7 +100,7 @@ class AddStoryFragment : Fragment() {
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
         val addStoryVm =
-            ViewModelProvider(this, ViewModelFactory(pref))[AddStoryViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[AddStoryViewModel::class.java]
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(

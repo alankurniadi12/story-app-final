@@ -34,9 +34,9 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
-        val loginVm = ViewModelProvider(this, ViewModelFactory(pref))[LoginViewModel::class.java]
+        val loginVm = ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[LoginViewModel::class.java]
         val listStoryVm =
-            ViewModelProvider(this, ViewModelFactory(pref))[ListStoryViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[ListStoryViewModel::class.java]
 
         listStoryVm.saveToken("")
 

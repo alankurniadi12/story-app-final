@@ -35,9 +35,9 @@ class RegisterFragment : Fragment() {
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
         val registerVm =
-            ViewModelProvider(this, ViewModelFactory(pref))[RegisterViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[RegisterViewModel::class.java]
         val listStoryVm =
-            ViewModelProvider(this, ViewModelFactory(pref))[ListStoryViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[ListStoryViewModel::class.java]
 
         listStoryVm.saveToken("")
 

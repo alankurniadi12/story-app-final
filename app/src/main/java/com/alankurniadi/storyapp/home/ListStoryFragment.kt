@@ -24,7 +24,8 @@ class ListStoryFragment : Fragment() {
     private var _binding: FragmentListStoryBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapterStory: ListStoryAdapter
-    private lateinit var dataMaps: List<ListStoryItem>
+    private lateinit var dataMaps: ArrayList<ListStoryItem>
+    private lateinit var token: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,32 +41,35 @@ class ListStoryFragment : Fragment() {
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
         val listStoryVm =
-            ViewModelProvider(this, ViewModelFactory(pref))[ListStoryViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[ListStoryViewModel::class.java]
 
         listStoryVm.getToken().observe(viewLifecycleOwner) { tokenPref ->
+            token = tokenPref
             if (tokenPref != "") {
-                listStoryVm.getAllStory(tokenPref)
+                listStoryVm.getAllStory(tokenPref).observe(viewLifecycleOwner) { dataStory ->
+                    Log.e("ListStoryFragment", "onViewCreated: $dataStory")
+                    with(binding) {
+                        if (dataStory != null) {
+
+                            /**
+                             * Gimana caranya ngirim dataMaps ke MapsActivity,
+                             * data yang ingin dirikim dalam bentuk list sedangkan data hasil obsever
+                             * dalam bentuk PagingData
+                             * (dataMaps akan dikirim melalui argument - lihat baris 105)
+                             * */
+                            dataMaps = dataStory
+                            progressList.visibility = View.GONE
+
+                            actionLogout.visibility = View.VISIBLE
+                            btnAddStory.visibility = View.VISIBLE
+
+                            rvStory.visibility = View.VISIBLE
+                            adapterStory.submitData(lifecycle, dataStory)
+                        }
+                    }
+                }
             } else {
                 findNavController().navigate(R.id.action_listStoryFragment_to_loginFragment)
-            }
-        }
-
-        listStoryVm.listStory.observe(viewLifecycleOwner) {
-            Log.e("ListStoryFragment", "onViewCreated: $it")
-            if (it.listStory != null) {
-                dataMaps = it.listStory
-            }
-
-            with(binding) {
-                if (it.listStory != null) {
-                    progressList.visibility = View.GONE
-
-                    actionLogout.visibility = View.VISIBLE
-                    btnAddStory.visibility = View.VISIBLE
-
-                    rvStory.visibility = View.VISIBLE
-                    adapterStory.setData(it.listStory)
-                }
             }
         }
 
@@ -77,11 +81,14 @@ class ListStoryFragment : Fragment() {
                 )
             )
         })
-
         with(binding.rvStory) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = adapterStory
+            adapter = adapterStory.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    adapterStory.retry()
+                }
+            )
         }
 
         binding.actionLogout.setOnClickListener {
