@@ -18,4 +18,5 @@ class StoryRepository(private val apiService: ApiService) {
             }
         ).liveData
     }
+
 }

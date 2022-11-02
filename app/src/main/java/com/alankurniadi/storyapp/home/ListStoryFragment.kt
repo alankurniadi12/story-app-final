@@ -41,23 +41,19 @@ class ListStoryFragment : Fragment() {
 
         val pref = SettingPreferences.getInstance(requireContext().dataStore)
         val listStoryVm =
-            ViewModelProvider(this, ViewModelFactory(requireContext(), pref))[ListStoryViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelFactory(requireContext(), pref)
+            )[ListStoryViewModel::class.java]
 
         listStoryVm.getToken().observe(viewLifecycleOwner) { tokenPref ->
             token = tokenPref
             if (tokenPref != "") {
                 listStoryVm.getAllStory(tokenPref).observe(viewLifecycleOwner) { dataStory ->
+
                     Log.e("ListStoryFragment", "onViewCreated: $dataStory")
                     with(binding) {
                         if (dataStory != null) {
-
-                            /**
-                             * Gimana caranya ngirim dataMaps ke MapsActivity,
-                             * data yang ingin dirikim dalam bentuk list sedangkan data hasil obsever
-                             * dalam bentuk PagingData
-                             * (dataMaps akan dikirim melalui argument - lihat baris 105)
-                             * */
-                            dataMaps = dataStory
                             progressList.visibility = View.GONE
 
                             actionLogout.visibility = View.VISIBLE
@@ -101,8 +97,7 @@ class ListStoryFragment : Fragment() {
         }
 
         binding.ivToMap.setOnClickListener {
-            it.findNavController()
-                .navigate(ListStoryFragmentDirections.actionListStoryFragmentToMapsActivity(dataMaps.toTypedArray()))
+            it.findNavController().navigate(R.id.action_listStoryFragment_to_mapsActivity)
         }
     }
 

@@ -11,11 +11,6 @@ import kotlinx.coroutines.launch
 class ListStoryViewModel(private val storyRepository: StoryRepository, private val pref: SettingPreferences) :
     ViewModel() {
 
-
-    companion object {
-        const val TAG = "ListStoryViewModel"
-    }
-
     private val _listStory = MutableLiveData<ResponseAllStories>()
     val listStory: LiveData<ResponseAllStories> = _listStory
 

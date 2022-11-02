@@ -8,6 +8,7 @@ import com.alankurniadi.storyapp.authentication.login.LoginViewModel
 import com.alankurniadi.storyapp.authentication.register.RegisterViewModel
 import com.alankurniadi.storyapp.di.Injection
 import com.alankurniadi.storyapp.home.ListStoryViewModel
+import com.alankurniadi.storyapp.maps.MapsStoryViewModel
 
 class ViewModelFactory(
     private val context: Context,
@@ -24,6 +25,8 @@ class ViewModelFactory(
             return RegisterViewModel() as T
         } else if (modelClass.isAssignableFrom(AddStoryViewModel::class.java)) {
             return AddStoryViewModel(pref) as T
+        } else if (modelClass.isAssignableFrom(MapsStoryViewModel::class.java)) {
+            return (MapsStoryViewModel(pref)) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

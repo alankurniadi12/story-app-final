@@ -4,16 +4,23 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asFlow
 import androidx.navigation.navArgs
 import com.alankurniadi.storyapp.R
+import com.alankurniadi.storyapp.dataStore
 import com.alankurniadi.storyapp.databinding.ActivityMapsBinding
+import com.alankurniadi.storyapp.home.ListStoryViewModel
 import com.alankurniadi.storyapp.model.ListStoryItem
+import com.alankurniadi.storyapp.utils.SettingPreferences
+import com.alankurniadi.storyapp.utils.ViewModelFactory
 import com.bumptech.glide.Glide
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -31,7 +38,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
-    private val args: MapsActivityArgs by navArgs()
     private lateinit var dataMarker: List<ListStoryItem>
     private val boundsBuilder = LatLngBounds.Builder()
 
@@ -45,11 +51,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        dataMarker = args.dataMaps.toList()
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -65,9 +68,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnInfoWi
         }
         mMap.setOnInfoWindowClickListener(this)
 
+        val pref = SettingPreferences.getInstance(this.dataStore)
+        val listStoryVm =
+            ViewModelProvider(this, ViewModelFactory(this, pref))[ListStoryViewModel::class.java]
+        val mapsViewModel =
+            ViewModelProvider(this, ViewModelFactory(this, pref))[MapsStoryViewModel::class.java]
+
+        listStoryVm.getToken().observe(this) {token ->
+            if (token != null) {
+                mapsViewModel.getAllStoryLocation(token)
+            }
+        }
+
+        mapsViewModel.dataMaps.observe(this) {
+            dataMarker = it.listStory
+            if (dataMarker.isNotEmpty()) {
+                userMarkerStory()
+                setCustomInfoWindow()
+            }
+        }
+
         getMyLocation()
-        userMarkerStory()
-        setCustomInfoWindow()
     }
 
     private fun setCustomInfoWindow() {
